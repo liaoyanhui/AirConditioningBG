@@ -43,17 +43,6 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
-  },
-  {
     path: '/userInformation',
     component: Layout,
     redirect: '/userInformation/personalInformation',
@@ -81,9 +70,9 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'projectManagement',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
+        path: '/projectManagement',
+        name: 'projectManagement',
+        component: () => import('@/views/projectManagement/index'),
         meta: { title: '项目管理', icon: 'form' }
       }
     ]
@@ -183,62 +172,61 @@ export const constantRoutes = [
       },
     ]
   },
-
   {
-    path: '/nested',
+    path: '/platformOverview',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
+    redirect: '/platformOverview/homepageMenu',
+    name: 'platformOverview',
+    alwaysShow: true,
+    meta: { title: '平台概览', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: '/platformOverview/homepageMenu',
+        name: 'homepageMenu',
+        component: () => import('@/views/platformOverview/homepageMenu/index'),
+        meta: { title: '主页菜单', icon: 'table' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
+        path: '/platformOverview/projectInformation',
+        name: 'projectInformation',
+        component: () => import('@/views/platformOverview/projectInformation/index'),
+        meta: { title: '项目信息', icon: 'table' }
+      },
+      {
+        path: '/platformOverview/eqInformation',
+        name: 'eqInformation',
+        component: () => import('@/views/platformOverview/eqInformation/index'),
+        meta: { title: '设备信息', icon: 'table' }
+      },
+      {
+        path: '/platformOverview/systemStatistics',
+        name: 'systemStatistics',
+        component: () => import('@/views/platformOverview/systemStatistics/index'),
+        meta: { title: '系统统计', icon: 'table' }
+      },
+    ]
+  },
+  {
+    path: '/hardwareIntroduction',
+    component: Layout,
+    children: [
+      {
+        path: '/hardwareIntroduction',
+        name: 'hardwareIntroduction',
+        component: () => import('@/views/hardwareIntroduction/index'),
+        meta: { title: '硬件介绍', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/bigScreenSupervision',
+    component: Layout,
+    children: [
+      {
+        path: '/bigScreenSupervision',
+        name: 'bigScreenSupervision',
+        component: () => import('@/views/bigScreenSupervision/index'),
+        meta: { title: '大屏监督', icon: 'form' }
       }
     ]
   },
