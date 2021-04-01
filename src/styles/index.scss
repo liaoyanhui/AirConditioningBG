@@ -61,5 +61,50 @@ div:focus {
 
 // main-container global css
 .app-container {
-  padding: 20px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #fff;
+  min-height: calc(100vh - 50px);
+  position: relative;
+}
+
+.components-tabeList {
+  margin-top: 30px;
+  margin-bottom: 100px;
+}
+
+.pagination-container {
+  //margin-top: 30px;
+  display: inline-block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  .filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    .filter {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      width: 260px;
+      span {
+        flex-shrink: 1;
+        display: inline-block;
+        width: 100px;
+      }
+    }
+  }
+  .filter-btn {
+    display: flex;
+    // justify-content: flex-end;
+    align-items: flex-end;
+    margin-bottom: 10px;
+  }
 }

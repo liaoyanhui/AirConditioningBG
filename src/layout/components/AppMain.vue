@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: shang xia
+ * @Date: 2021-03-29 10:39:57
+ * @LastEditors: shang xia
+ * @LastEditTime: 2021-04-01 13:53:12
+-->
 <template>
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
@@ -24,6 +32,8 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
+  background: #f2f2f2;
+  padding: 20px;
 }
 .fixed-header+.app-main {
   padding-top: 50px;

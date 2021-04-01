@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: shang xia
+ * @Date: 2021-03-29 10:39:57
+ * @LastEditors: shang xia
+ * @LastEditTime: 2021-04-01 15:10:22
+-->
 <template>
   <div class="app-container">
     <el-table
@@ -26,11 +34,6 @@
       <el-table-column label="Pageviews" width="110" align="center">
         <template slot-scope="scope">
           {{ scope.row.pageviews }}
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="Display_time" width="200">

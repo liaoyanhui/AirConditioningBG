@@ -43,7 +43,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/userInformation',
+    path: '/',
     component: Layout,
     redirect: '/userInformation/personalInformation',
     name: 'userInformation',
@@ -51,17 +51,17 @@ export const constantRoutes = [
     meta: { title: '用户信息', icon: 'el-icon-s-help' },
     children: [
       {
-        path: '/userInformation/personalInformation',
-        name: 'personalInformation',
-        component: () => import('@/views/table/index'),
-        meta: { title: '人员信息', icon: 'table' }
-      },
-      {
         path: '/userInformation/unitInformation',
         name: 'unitInformation',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/userInformation/unitInformation/index'),
         meta: { title: '单位信息', icon: 'table' }
       },
+      {
+        path: '/userInformation/personalInformation',
+        name: 'personalInformation',
+        component: () => import('@/views/userInformation/personalInformation/index'),
+        meta: { title: '人员信息', icon: 'table' }
+      }
     ]
   },
 
