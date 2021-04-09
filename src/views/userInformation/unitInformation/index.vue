@@ -4,7 +4,7 @@
  * @Author: shang xia
  * @Date: 2021-04-01 10:27:30
  * @LastEditors: shang xia
- * @LastEditTime: 2021-04-01 19:25:01
+ * @LastEditTime: 2021-04-08 14:13:58
 -->
 <template>
  <div class="app-container">
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/table'
+import { getOrganList } from '@/api/api'
 import pagination from '@/components/Pagination';
 import UnitDelModal from './UnitDelModal.vue';
 import UnitModal from './UnitModal.vue';
@@ -103,7 +103,7 @@ export default {
     getTableList() {},
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
+      getOrganList({organId: ''}).then(response => {
         this.list = response.data.items
         this.listLoading = false
       })

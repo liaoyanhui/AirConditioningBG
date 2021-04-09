@@ -45,7 +45,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/userInformation/personalInformation',
+    redirect: '/userInformation/unitInformation',
     name: 'userInformation',
     alwaysShow: true,
     meta: { title: '用户信息', icon: 'el-icon-s-help' },

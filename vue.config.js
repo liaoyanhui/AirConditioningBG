@@ -36,7 +36,13 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    before: require('./mock/mock-server.js'),
+    proxy: {
+      '/iot': {
+        target: 'http://47.105.105.252:9999/',
+        changOrigin: true,
+      }
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

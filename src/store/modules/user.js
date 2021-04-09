@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: shang xia
+ * @Date: 2021-03-29 10:39:57
+ * @LastEditors: shang xia
+ * @LastEditTime: 2021-04-08 14:05:34
+ */
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
@@ -38,7 +46,8 @@ const actions = {
         setToken(data.token)
         resolve()
       }).catch(error => {
-        reject(error)
+        resolve()
+        // reject(error)
       })
     })
   },
@@ -48,7 +57,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
-
+        console.log(response, '1234')
         if (!data) {
           return reject('Verification failed, please Login again.')
         }

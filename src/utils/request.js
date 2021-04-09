@@ -4,7 +4,7 @@
  * @Author: shang xia
  * @Date: 2021-03-29 10:39:57
  * @LastEditors: shang xia
- * @LastEditTime: 2021-04-01 10:44:03
+ * @LastEditTime: 2021-04-08 14:07:23
  */
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
@@ -13,9 +13,9 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 15000 // request timeout
 })
 
 service.interceptors.request.use(
