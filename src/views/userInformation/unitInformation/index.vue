@@ -103,7 +103,7 @@ export default {
     getTableList() {},
     fetchData() {
       this.listLoading = true
-      getOrganList({organId: ''}).then(response => {
+      getOrganList({offset: 1, max: 10}).then(response => {
         this.list = response.data.items
         this.listLoading = false
       })

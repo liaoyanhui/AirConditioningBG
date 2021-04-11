@@ -11,7 +11,7 @@ import request from '@/utils/request'
 
 export function getOrganList(params) {
     return request({
-        url: '/iot/mobile/organ/findByOrganId',
+        url: '/iot/mobile/organ/findPageWith',
         method: 'get',
         params
     })
