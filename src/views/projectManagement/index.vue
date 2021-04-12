@@ -1,85 +1,215 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: shang xia
+ * @Date: 2021-04-01 10:27:30
+ * @LastEditors: shang xia
+ * @LastEditTime: 2021-04-12 17:35:04
+-->
 <template>
-  <div class="app-container">
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Activity name">
-        <el-input v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="Activity zone">
-        <el-select v-model="form.region" placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="Activity time">
-        <el-col :span="11">
-          <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%;" />
-        </el-col>
-        <el-col :span="2" class="line">-</el-col>
-        <el-col :span="11">
-          <el-time-picker v-model="form.date2" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Instant delivery">
-        <el-switch v-model="form.delivery" />
-      </el-form-item>
-      <el-form-item label="Activity type">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="Online activities" name="type" />
-          <el-checkbox label="Promotion activities" name="type" />
-          <el-checkbox label="Offline activities" name="type" />
-          <el-checkbox label="Simple brand exposure" name="type" />
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="Resources">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="Sponsor" />
-          <el-radio label="Venue" />
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="Activity form">
-        <el-input v-model="form.desc" type="textarea" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button @click="onCancel">Cancel</el-button>
-      </el-form-item>
-    </el-form>
+ <div class="app-container">
+    <div class="filter-container">
+      <div class="filter-list">
+        <div class="filter">
+          <span>项目名称:</span>
+          <el-input v-model="organName" placeholder="项目名称" @keyup.enter.native="handleQuery"/>
+        </div>
+      </div>
+       <div class="filter-btn">
+          <el-button class="btn" type="primary" @click="handleQuery">
+            <i class="el-icon-search" />
+            查询
+          </el-button>
+          <el-button class="btn" type="primary" @click="handleAddUnit">
+            <i class="el-icon-plus" />
+            新增项目
+          </el-button>
+        </div>
+    </div>
+    <el-table
+      v-loading="listLoading"
+      class="components-tabeList"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column align="center" label="序号" width="95">
+        <template slot-scope="scope">
+          {{ scope.$index }}
+        </template>
+      </el-table-column>
+      <el-table-column label="项目名称">
+        <template slot-scope="scope">
+          {{ scope.row.organName || '--' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="项目描述" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.address || '--' }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="项目描述" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.remark || '--' }}</span>
+        </template>
+      </el-table-column>
+       <el-table-column label="操作" align="center"  width="180">
+        <template slot-scope="scope">
+          <el-button
+            @click="handleChange(scope.row)"
+            type="text">修改</el-button>
+           <el-button
+            @click="handleDelete(scope.row.organId)"
+            type="text">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <pagination :total="pagination.totleCount" :page="pagination.offset" :limit="pagination.max" @pagination="getTableList"/>
+    <UnitModal :visible="visible" :type="modalType" :handleCancel="handleUnitCancel" :handleOk="handleUnitOk" :unitData="unitData"/>
+    <UnitDelModal :visible="delVisible" :handleCancel="handleDelCancel" :handleOk="handleDelOk" />
   </div>
 </template>
 
 <script>
+import pagination from '@/components/Pagination';
+import UnitDelModal from './UnitDelModal.vue';
+import UnitModal from './UnitModal.vue';
+
 export default {
   data() {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      }
+      list: null,
+      listLoading: false,
+      pagination: {
+        max: 10,
+        offset: 1,
+        totleCount: 0
+      },
+      
+      delVisible: false,
+      organName: '',
+      unitId: '',
+
+      visible: false,
+      modalType: 1,
+      unitData: {},
     }
   },
+   components: {
+    UnitDelModal,
+    UnitModal,
+    pagination
+  },
+  created() {
+    this.fetchData({offset: 1, max: 10})
+  },
   methods: {
-    onSubmit() {
-      this.$message('submit!')
+    handleDelete(id) {
+      this.unitId = id;
+      this.delVisible = true;
     },
-    onCancel() {
-      this.$message({
-        message: 'cancel!',
-        type: 'warning'
+
+    handleDelCancel() {
+      this.unitId = '';
+      this.delVisible = false;
+    },
+    handleDelOk() {
+      this.$store.dispatch('userInformation/deleteUnit', {organId: this.unitId}).then(res => {
+        this.$message({
+          message: '单位已成功删除',
+          type: 'success',
+        });
+        this.unitId = '';
+        this.delVisible = false;
       })
+    },
+    getTableList(pag) {
+       const data = {
+          offset: pag.page,
+          max: pag.limit
+        };
+        this.fetchData(data)
+    },
+    fetchData(data) {
+      this.listLoading = true
+      this.$store.dispatch('userInformation/getUnitList', {...data}).then(res => {
+        this.list = res.list;
+        this.pagination = {
+          max: res.max,
+          offset: res.offset,
+          totleCount: res.totleCount
+        }
+        this.listLoading = false;
+      })
+    },
+    handleQuery() {
+      this.fetchData({offset: 1, max: 10, organName: this.organName})
+    },
+    
+    handleAddUnit() {
+      this.modalType = 1;
+      this.visible = true;
+    },
+    handleChange(data) {
+      this.unitId = data.organId;
+      this.modalType = 2;
+      this.visible = true;
+      this.unitData = {
+        organName: data.organName,
+        address: data.address,
+      }
+    },
+
+    handleUnitCancel() {
+      this.visible = false;
+      this.modalType = 1;
+      this.unitId = '';
+      this.unitData = {};
+    },
+    handleUnitOk(data) {
+      if(this.modalType === 1) {
+        this.$store.dispatch('userInformation/addUnit', data).then(res => {
+          this.$message({
+            message: '新增单位成功！',
+            type: 'success',
+          });
+          this.fetchData({offset: 1, max: 10})
+          this.handleUnitCancel();
+        })
+      }else if(this.modalType === 2) {
+        this.$store.dispatch('userInformation/updateUnit', {...data, organId: this.unitId}).then(res => {
+          this.$message({
+            message: '单位信息修改成功！',
+            type: 'success',
+          });
+          this.fetchData({offset: this.pagination.offset, max: this.pagination.max})
+          this.handleUnitCancel();
+        })
+      }
+    },
+
+    handleDelete(id) {
+      // this.unitId = id;
+      // this.delVisible = true;
+      this.$confirm('此操作将永久删除该项目, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
     }
   }
 }
 </script>
-
-<style scoped>
-.line{
-  text-align: center;
-}
-</style>
-
