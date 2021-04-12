@@ -4,7 +4,7 @@
  * @Author: shang xia
  * @Date: 2021-04-01 10:27:16
  * @LastEditors: shang xia
- * @LastEditTime: 2021-04-01 18:46:45
+ * @LastEditTime: 2021-04-12 18:05:08
 -->
 <template>
   <div class="app-container">
@@ -56,12 +56,12 @@
       </el-table-column>
       <el-table-column label="用户名" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.userName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="手机号" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.phone }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="邮箱">
@@ -72,7 +72,7 @@
       </el-table-column>
        <el-table-column label="用户类型" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.type }}
         </template>
       </el-table-column>
         <el-table-column label="用户状态" width="110" align="center">
@@ -88,7 +88,7 @@
         <el-table-column label="注册时间" align="center">
        <template slot-scope="scope">
           <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
+          <span>{{ scope.row.dateCreated }}</span>
         </template>
       </el-table-column>
         <el-table-column label="操作" align="center"  width="180">
@@ -105,14 +105,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination :total="total" :page="page" :limit="limit" @pagination="getTableList"/>
+    <pagination :total="pagination.totleCount" :page="pagination.offset" :limit="pagination.max" @pagination="getTableList"/>
     <UserModal :visible="visible" :type="modalType" :handleCancel="handleUserCancel" :handleOk="handleUserOk" :userData="userData"/>
     <UserDelModal :visible="delVisible" :handleCancel="handleDelCancel" :handleOk="handleDelOk" />
   </div>
 </template>
-
+d
 <script>
-import { getList } from '@/api/table'
 import UserModal from './UserModa.vue';
 import UserDelModal from './UserDelModal.vue';
 import pagination from '@/components/Pagination';
@@ -122,14 +121,22 @@ export default {
     return {
       list: null,
       listLoading: false,
-      total: 0,
-      page: 1, // 第几页
-      limit: 10, // 一页有多少条数
+
+      pagination: {
+        max: 10,
+        offset: 1,
+        totleCount: 0
+      },
 
       userId: '', // 需要被操作的用户id
+
       userName: '',
       phoneNumber: '',
-      userType: [],
+      userType: [
+        {value: 'ADMIN', label: '系统管理员'},
+        {value: 'SECOND_ADMIN', label: '分管理员'},
+        {value: 'COMMONPERSON', label: '普通人员'},
+      ],
       type: '',
       unitName: '',
       visible: false,
@@ -145,19 +152,29 @@ export default {
     pagination
   },
   created() {
-    this.fetchData()
+    this.fetchData({offset: 1, max: 10})
   },
   methods: {
     getTableList() {},
-    fetchData() {
+    fetchData(data) {
       this.listLoading = true
-      getList({limit: 10}).then(response => {
-        this.list = response.data.items
-        this.listLoading = false
-      })
+      this.$store.dispatch('userInformation/getPersonalList', {...data}).then(res => {
+          this.list = res.list;
+          this.pagination = {
+            max: res.max,
+            offset: res.offset,
+            totleCount: res.totleCount
+          }
+          this.listLoading = false;
+        })
     },
 
-    handleQuery() {},
+    handleQuery() {
+      const data = {
+        offset: 1, max: 10,
+        
+      }
+    },
     handleAddUser() {
       this.modalType = 1;
       this.visible = true;

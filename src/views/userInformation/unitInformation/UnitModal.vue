@@ -4,7 +4,7 @@
  * @Author: shang xia
  * @Date: 2021-04-01 18:47:12
  * @LastEditors: shang xia
- * @LastEditTime: 2021-04-01 19:14:09
+ * @LastEditTime: 2021-04-12 16:20:12
 -->
 
 <template>
@@ -16,11 +16,11 @@
             :before-close="handleModalCancel">
             <el-form :model="unitForm" ref="unitFormRef" label-width="100px">
                 <el-form-item
-                    prop="unitName"
+                    prop="organName"
                     label="单位名称"
-                    :rules="rules.unitName"
+                    :rules="rules.organName"
                 >
-                    <el-input v-model="unitForm.unitName"></el-input>
+                    <el-input v-model="unitForm.organName"></el-input>
                 </el-form-item>
                 <el-form-item
                     prop="address"
@@ -45,11 +45,11 @@
         data() {
             return {
                 unitForm: {
-                    unitName: '',
+                    organName: '',
                     address: '',
                 },
                 rules: {
-                    unitName: [
+                    organName: [
                         { required: true, message: '请输入单位名称', trigger: 'blur' },
                     ],
                     address: { required: true, message: '请输入地址', trigger: 'blur' },
@@ -73,7 +73,7 @@
             handleSure() {
                  this.$refs['unitFormRef'].validate((valid) => {
                     if (valid) {
-                        this.handleOk()
+                        this.handleOk(this.unitForm)
                     } else {
                         return false;
                     }

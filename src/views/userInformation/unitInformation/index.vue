@@ -4,7 +4,7 @@
  * @Author: shang xia
  * @Date: 2021-04-01 10:27:30
  * @LastEditors: shang xia
- * @LastEditTime: 2021-04-08 14:13:58
+ * @LastEditTime: 2021-04-12 17:35:04
 -->
 <template>
  <div class="app-container">
@@ -12,7 +12,7 @@
       <div class="filter-list">
         <div class="filter">
           <span>单位名称:</span>
-          <el-input v-model="unitName" placeholder="单位名称" @keyup.enter.native="handleQuery"/>
+          <el-input v-model="organName" placeholder="单位名称" @keyup.enter.native="handleQuery"/>
         </div>
       </div>
        <div class="filter-btn">
@@ -42,33 +42,32 @@
       </el-table-column>
       <el-table-column label="单位名称">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.organName }}
         </template>
       </el-table-column>
       <el-table-column label="地址" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.address }}</span>
         </template>
       </el-table-column>
        <el-table-column label="操作" align="center"  width="180">
         <template slot-scope="scope">
           <el-button
-            @click="handleChange(scope.row.$index)"
+            @click="handleChange(scope.row)"
             type="text">修改</el-button>
            <el-button
-            @click="handleDelete(scope.row.$index)"
+            @click="handleDelete(scope.row.organId)"
             type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <pagination :total="total" :page="page" :limit="limit" @pagination="getTableList"/>
+    <pagination :total="pagination.totleCount" :page="pagination.offset" :limit="pagination.max" @pagination="getTableList"/>
     <UnitModal :visible="visible" :type="modalType" :handleCancel="handleUnitCancel" :handleOk="handleUnitOk" :unitData="unitData"/>
     <UnitDelModal :visible="delVisible" :handleCancel="handleDelCancel" :handleOk="handleDelOk" />
   </div>
 </template>
 
 <script>
-import { getOrganList } from '@/api/api'
 import pagination from '@/components/Pagination';
 import UnitDelModal from './UnitDelModal.vue';
 import UnitModal from './UnitModal.vue';
@@ -78,12 +77,14 @@ export default {
     return {
       list: null,
       listLoading: false,
-      total: 0,
-      page: 1, // 第几页
-      limit: 10, // 一页有多少条数
-
+      pagination: {
+        max: 10,
+        offset: 1,
+        totleCount: 0
+      },
+      
       delVisible: false,
-      unitName: '',
+      organName: '',
       unitId: '',
 
       visible: false,
@@ -97,31 +98,43 @@ export default {
     pagination
   },
   created() {
-    this.fetchData()
+    this.fetchData({offset: 1, max: 10})
   },
   methods: {
-    getTableList() {},
-    fetchData() {
+    getTableList(pag) {
+       const data = {
+          offset: pag.page,
+          max: pag.limit
+        };
+        this.fetchData(data)
+    },
+    fetchData(data) {
       this.listLoading = true
-      getOrganList({offset: 1, max: 10}).then(response => {
-        this.list = response.data.items
-        this.listLoading = false
+      this.$store.dispatch('userInformation/getUnitList', {...data}).then(res => {
+        this.list = res.list;
+        this.pagination = {
+          max: res.max,
+          offset: res.offset,
+          totleCount: res.totleCount
+        }
+        this.listLoading = false;
       })
     },
-    handleQuery() {},
-    handleReset() {},
+    handleQuery() {
+      this.fetchData({offset: 1, max: 10, organName: this.organName})
+    },
     
     handleAddUnit() {
       this.modalType = 1;
       this.visible = true;
     },
-    handleChange(id) {
-      this.unitId = id;
+    handleChange(data) {
+      this.unitId = data.organId;
       this.modalType = 2;
       this.visible = true;
       this.unitData = {
-        unitName: '公司名称',
-        address: '公司地址',
+        organName: data.organName,
+        address: data.address,
       }
     },
 
@@ -131,7 +144,27 @@ export default {
       this.unitId = '';
       this.unitData = {};
     },
-    handleUnitOk() {},
+    handleUnitOk(data) {
+      if(this.modalType === 1) {
+        this.$store.dispatch('userInformation/addUnit', data).then(res => {
+          this.$message({
+            message: '新增单位成功！',
+            type: 'success',
+          });
+          this.fetchData({offset: 1, max: 10})
+          this.handleUnitCancel();
+        })
+      }else if(this.modalType === 2) {
+        this.$store.dispatch('userInformation/updateUnit', {...data, organId: this.unitId}).then(res => {
+          this.$message({
+            message: '单位信息修改成功！',
+            type: 'success',
+          });
+          this.fetchData({offset: this.pagination.offset, max: this.pagination.max})
+          this.handleUnitCancel();
+        })
+      }
+    },
 
     handleDelete(id) {
       this.unitId = id;
@@ -143,8 +176,14 @@ export default {
       this.delVisible = false;
     },
     handleDelOk() {
-      this.unitId = '';
-      this.delVisible = false;
+      this.$store.dispatch('userInformation/deleteUnit', {organId: this.unitId}).then(res => {
+        this.$message({
+          message: '单位已成功删除',
+          type: 'success',
+        });
+        this.unitId = '';
+        this.delVisible = false;
+      })
     }
   }
 }
