@@ -110,8 +110,7 @@
         >
 
             <div>
-                111
-                <addressSelection :storeLocation="storeLocation" v-on:point="point"></addressSelection>
+                <addressSelection :storeLocation="storeLocation" v-on:handelPoint="point" ></addressSelection>
             </div>
             
         </el-dialog>
@@ -128,8 +127,8 @@
                 unitForm: {
                     prodctName: '',
                     sort: 1,
-                    longitude: 1.12,
-                    latitude: 1.3,
+                    longitude: '',
+                    latitude: '',
                     provinces: '',
                     city: '',
                     description: '',
@@ -190,9 +189,10 @@
             handleMapOk(e){
 		        this.mapVisible = false;
 		    },
-            point(e){
-		    	console.log(e)
-		    	this.storeLocation=[e.lng,e.lat]
+            point(pointData){
+                console.log(pointData, 'ndaole');
+                this.mapVisible = false;
+                this.unitForm = { ...this.unitForm, longitude: pointData.lng, latitude: pointData.lat };
 		    }
         },
 
