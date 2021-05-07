@@ -6,7 +6,8 @@
  * @LastEditors: shang xia
  * @LastEditTime: 2021-04-12 17:34:40
  */
-import { getUnitList, addUnit, deleteUnit, updateUnit, getPersonalList } from '@/api/api'
+import { getUnitList, addUnit, deleteUnit, updateUnit, getPersonalList, addProject,
+    deleteProject, updateProject, getProject } from '@/api/api'
 
 const state = {
     unitList: [],
@@ -59,6 +60,42 @@ const actions = {
     getPersonalList({ commit }, params) {
         return new Promise((resolve, reject) => {
             getPersonalList(params).then(res => {
+                resolve(res.model)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+    addProject({commit}, params) {
+        return new Promise((resolve, reject) => {
+            addProject(params).then(res => {
+                resolve()
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+    updateProject({commit}, params) {
+        return new Promise((resolve, reject) => {
+            updateProject(params).then(res => {
+                resolve()
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+    deleteProject({commit}, params) {
+        return new Promise((resolve, reject) => {
+            deleteProject(params).then(res => {
+                resolve()
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+    getProject({commit}, params) {
+        return new Promise((resolve, reject) => {
+            getProject(params).then(res => {
                 resolve(res.model)
             }).catch(err => {
                 reject(err)

@@ -100,3 +100,38 @@ export function updatePersonal(params) {
     })
 }
 
+// 新增项目
+export function addProject(params) {
+    return request({
+        url: '/iot/mobile/project/add',
+        method: 'get',
+        params
+    })
+}
+
+// 删除项目
+export function deleteProject(params) {
+    return request({
+        url: '/iot/mobile/project/delete',
+        method: 'get',
+        params
+    })
+}
+
+// 修改项目
+export function updateProject(params) {
+    return request({
+        url: '/iot/mobile/project/update',
+        method: 'get',
+        params
+    })
+}
+
+// 获取列表
+export function getProject(params) {
+    return request({
+        url: '/iot/mobile/project/findPageWith',
+        method: 'get',
+        params
+    })
+}

@@ -12,7 +12,7 @@
       <div class="filter-list">
         <div class="filter">
           <span>项目名称:</span>
-          <el-input v-model="organName" placeholder="项目名称" @keyup.enter.native="handleQuery"/>
+          <el-input v-model="projectName" placeholder="项目名称" @keyup.enter.native="handleQuery"/>
         </div>
       </div>
        <div class="filter-btn">
@@ -42,16 +42,16 @@
       </el-table-column>
       <el-table-column label="项目名称">
         <template slot-scope="scope">
-          {{ scope.row.organName || '--' }}
+          {{ scope.row.projectName || '--' }}
         </template>
       </el-table-column>
       <el-table-column label="项目描述" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.address || '--' }}</span>
+          <span>{{ scope.row.description || '--' }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="项目描述" align="center">
+      <el-table-column label="项目备注" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.remark || '--' }}</span>
         </template>
@@ -62,13 +62,13 @@
             @click="handleChange(scope.row)"
             type="text">修改</el-button>
            <el-button
-            @click="handleDelete(scope.row.organId)"
+            @click="handleDelete(scope.row.projectId)"
             type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <pagination :total="pagination.totleCount" :page="pagination.offset" :limit="pagination.max" @pagination="getTableList"/>
-    <UnitModal :visible="visible" :type="modalType" :handleCancel="handleUnitCancel" :handleOk="handleUnitOk" :unitData="unitData"/>
+    <UnitModal :visible="visible" :type="modalType" :handleCancel="handleProjectCancel" :handleOk="handleProjectOk" :unitData="unitData"/>
     <UnitDelModal :visible="delVisible" :handleCancel="handleDelCancel" :handleOk="handleDelOk" />
   </div>
 </template>
@@ -88,11 +88,9 @@ export default {
         offset: 1,
         totleCount: 0
       },
-      
       delVisible: false,
-      organName: '',
+      projectName: '',
       unitId: '',
-
       visible: false,
       modalType: 1,
       unitData: {},
@@ -117,9 +115,10 @@ export default {
       this.delVisible = false;
     },
     handleDelOk() {
-      this.$store.dispatch('userInformation/deleteUnit', {organId: this.unitId}).then(res => {
+      this.$store.dispatch('userInformation/deleteProject', {projectId: this.unitId}).then(res => {
+        console.log(res, 'sdfsdfsdfsdfsdf')
         this.$message({
-          message: '单位已成功删除',
+          message: '项目已成功删除',
           type: 'success',
         });
         this.unitId = '';
@@ -135,7 +134,8 @@ export default {
     },
     fetchData(data) {
       this.listLoading = true
-      this.$store.dispatch('userInformation/getUnitList', {...data}).then(res => {
+      this.$store.dispatch('userInformation/getProject', {...data}).then(res => {
+        console.log(res, 'oooooo')
         this.list = res.list;
         this.pagination = {
           max: res.max,
@@ -146,47 +146,44 @@ export default {
       })
     },
     handleQuery() {
-      this.fetchData({offset: 1, max: 10, organName: this.organName})
+      this.fetchData({offset: 1, max: 10, projectName: this.projectName})
     },
-    
     handleAddUnit() {
       this.modalType = 1;
       this.visible = true;
     },
     handleChange(data) {
-      this.unitId = data.organId;
-      this.modalType = 2;
       this.visible = true;
-      this.unitData = {
-        organName: data.organName,
-        address: data.address,
-      }
+      this.modalType = 2;
+      console.log(data, 999999)
+      data.modalType = 2;
+      this.unitData = data
     },
 
-    handleUnitCancel() {
+    handleProjectCancel() {
       this.visible = false;
-      this.modalType = 1;
       this.unitId = '';
       this.unitData = {};
     },
-    handleUnitOk(data) {
-      if(this.modalType === 1) {
-        this.$store.dispatch('userInformation/addUnit', data).then(res => {
+    handleProjectOk(data) {
+      console.log(data, 'iissss')
+      if(data.modalType === 1) {
+        this.$store.dispatch('userInformation/addProject', data).then(res => {
           this.$message({
-            message: '新增单位成功！',
+            message: '新增项目成功！',
             type: 'success',
           });
-          this.fetchData({offset: 1, max: 10})
-          this.handleUnitCancel();
+          // this.fetchData({offset: 1, max: 10})
+          this.handleProjectCancel();
         })
-      }else if(this.modalType === 2) {
-        this.$store.dispatch('userInformation/updateUnit', {...data, organId: this.unitId}).then(res => {
+      }else if(data.modalType === 2) {
+        this.$store.dispatch('userInformation/updateProject', {...data}).then(res => {
           this.$message({
-            message: '单位信息修改成功！',
+            message: '项目修改成功！',
             type: 'success',
           });
           this.fetchData({offset: this.pagination.offset, max: this.pagination.max})
-          this.handleUnitCancel();
+          // this.handleUnitCancel();
         })
       }
     },
@@ -199,10 +196,15 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.$store.dispatch('userInformation/deleteProject', {projectId: id}).then(res => {
           this.$message({
+            message: '项目已成功删除',
             type: 'success',
-            message: '删除成功!'
           });
+          this.unitId = '';
+          this.delVisible = false;
+          this.fetchData({offset: 1, max: 10})
+      })
         }).catch(() => {
           this.$message({
             type: 'info',

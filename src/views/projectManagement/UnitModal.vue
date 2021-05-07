@@ -18,40 +18,40 @@
                 <el-row :gutter="24">
                     <el-col :span="12">
                         <el-form-item
-                            prop="productName"
+                            prop="projectName"
                             label="项目名称"
-                            :rules="rules.prodctName"
+                            :rules="rules.projectName"
                         >
-                            <el-input v-model="unitForm.prodctName"></el-input>
+                            <el-input v-model="unitForm.projectName"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item
-                            prop="sort"
+                            prop="sortNo"
                             label="排序"
-                            :rules="rules.sort"
+                            :rules="rules.sortNo"
                         >
-                            <el-input type="number" v-model="unitForm.sort"></el-input>
+                            <el-input type="number" v-model="unitForm.sortNo"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row :gutter="24">
                     <el-col :span="12">
                         <el-form-item
-                            prop="longitude"
+                            prop="lng"
                             label="经度"
-                            :rules="rules.longitude"
+                            :rules="rules.lng"
                         >
-                            <el-input v-model="unitForm.longitude" @focus="onSearch"></el-input>
+                            <el-input v-model="unitForm.lng" @focus="onSearch"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                        <el-form-item
-                            prop="latitude"
+                            prop="lat"
                             label="纬度"
-                            :rules="rules.latitude"
+                            :rules="rules.lat"
                         >
-                            <el-input v-model="unitForm.latitude" @focus="onSearch"></el-input>
+                            <el-input v-model="unitForm.lat" @focus="onSearch"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -125,26 +125,20 @@
         data() {
             return {
                 unitForm: {
-                    prodctName: '',
+                    projectName: '',
                     sort: 1,
-                    longitude: '',
-                    latitude: '',
+                    lng: '',
+                    lat: '',
                     provinces: '',
                     city: '',
                     description: '',
-                    remark: ''
+                    remark: '',
+                    modalType:　1
                 },
                 rules: {
-                    prodctName: [
+                    projectName: [
                         { required: true, message: '请输入项目名称', trigger: 'blur' },
-                    ],
-                    sort: { required: true, message: '请输入排序方式', trigger: 'blur' },
-                    longitude: { required: true, message: '请输入经度', trigger: 'blur' },
-                    latitude: { required: true, message: '请输入纬度', trigger: 'blur' },
-                    provinces: { required: true, message: '请输入省份', trigger: 'blur' },
-                    city: { required: true, message: '请输入排序所在市', trigger: 'blur' },
-                    description: {},
-                    remark: {},
+                    ]
                 },
                 mapVisible: false,
                 storeLocation:[]
@@ -154,11 +148,14 @@
             type: {
                 immediate: true,
                 handler(val) {
+                    console.log(val, 'ssdfsdfsdfsdf')
                     if(val === 2) {
                         this.unitForm = {
                             ...this.unitForm,
                             ...this.unitData
                         }
+
+                        console.log(this.unitForm, 'jjssss')
                     }
                 }
             }
@@ -166,13 +163,15 @@
         methods: {
             handleSure() {
                  this.$refs['unitFormRef'].validate((valid) => {
+                     console.log(valid, 'sdfsdfsdfsdfsdf')
                     if (valid) {
-                        this.handleOk(this.unitForm)
+                        console.log('wocaonima!!!')
+                        this.handleOk(this.unitForm);
+                        this.$refs['unitFormRef'].resetFields();
                     } else {
                         return false;
                     }
                 });
-                console.log(this.unitForm, 'unitForm')
             },
             handleModalCancel() {
                 this.$refs['unitFormRef'].resetFields();
@@ -192,7 +191,7 @@
             point(pointData){
                 console.log(pointData, 'ndaole');
                 this.mapVisible = false;
-                this.unitForm = { ...this.unitForm, longitude: pointData.lng, latitude: pointData.lat };
+                this.unitForm = { ...this.unitForm, lng: pointData.lng, lat: pointData.lat };
 		    }
         },
 
