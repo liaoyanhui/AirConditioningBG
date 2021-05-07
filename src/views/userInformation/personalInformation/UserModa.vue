@@ -89,8 +89,9 @@
         data() {
             return {
                 userTypeList: [
-                    {value: '0', label: '刘成宝nc'},
-                    {value: '1', label: '刘成宝sb'}
+                     {value: 'ADMIN', label: '系统管理员'},
+                    {value: 'SECOND_ADMIN', label: '分管理员'},
+                    {value: 'COMMONPERSON', label: '普通人员'},
                 ],
                 userForm: {
                     userName: '',

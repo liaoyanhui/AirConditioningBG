@@ -56,23 +56,22 @@
       </el-table-column>
       <el-table-column label="用户名" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.userName }}</span>
+          <span>{{ scope.row.userName || '' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="手机号" align="center">
         <template slot-scope="scope">
-          {{ scope.row.phone }}
+          {{ scope.row.phone || '' }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="邮箱">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
+         <template slot-scope="scope">
+          {{ scope.row.email || '' }}
         </template>
       </el-table-column>
        <el-table-column label="用户类型" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.type }}
+          {{ transferType(scope.row.type) }}
         </template>
       </el-table-column>
         <el-table-column label="用户状态" width="110" align="center">
@@ -82,7 +81,7 @@
       </el-table-column>
         <el-table-column label="单位名称" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          {{ scope.row.organName || '' }}
         </template>
       </el-table-column>
         <el-table-column label="注册时间" align="center">
@@ -110,7 +109,7 @@
     <UserDelModal :visible="delVisible" :handleCancel="handleDelCancel" :handleOk="handleDelOk" />
   </div>
 </template>
-d
+
 <script>
 import UserModal from './UserModa.vue';
 import UserDelModal from './UserDelModal.vue';
@@ -149,7 +148,7 @@ export default {
   components: {
     UserModal,
     UserDelModal,
-    pagination
+    pagination,
   },
   created() {
     this.fetchData({offset: 1, max: 10})
@@ -168,12 +167,22 @@ export default {
           this.listLoading = false;
         })
     },
-
+    transferType(value) {
+      const item = this.userType.find(i =>  i.value === value);
+      if(item) {
+        return item.label
+      }else {
+        return ''
+      }
+    },
     handleQuery() {
       const data = {
-        offset: 1, max: 10,
-        
+        offset: 1,
+        max: 10,
+        realName: this.userName,
+
       }
+      // fetchData(data)
     },
     handleAddUser() {
       this.modalType = 1;
