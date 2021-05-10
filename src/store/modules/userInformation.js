@@ -1,16 +1,18 @@
 /*
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: shang xia
  * @Date: 2021-04-12 13:44:15
  * @LastEditors: shang xia
  * @LastEditTime: 2021-04-12 17:34:40
  */
-import { getUnitList, addUnit, deleteUnit, updateUnit, getPersonalList, addProject,
-    deleteProject, updateProject, getProject } from '@/api/api'
+import {
+    getUnitList, addUnit, deleteUnit, updateUnit, getPersonalList, addProject,
+    deleteProject, updateProject, getProject, getProviceList, getChildAreaByAreaId
+} from '@/api/api'
 
 const state = {
-    unitList: [],
+    unitList: []
 }
 
 const mutations = {
@@ -30,7 +32,7 @@ const actions = {
             })
         })
     },
-    addUnit({commit}, params) {
+    addUnit({ commit }, params) {
         return new Promise((resolve, reject) => {
             addUnit(params).then(res => {
                 resolve()
@@ -66,7 +68,7 @@ const actions = {
             })
         })
     },
-    addProject({commit}, params) {
+    addProject({ commit }, params) {
         return new Promise((resolve, reject) => {
             addProject(params).then(res => {
                 resolve()
@@ -75,7 +77,7 @@ const actions = {
             })
         })
     },
-    updateProject({commit}, params) {
+    updateProject({ commit }, params) {
         return new Promise((resolve, reject) => {
             updateProject(params).then(res => {
                 resolve()
@@ -84,7 +86,7 @@ const actions = {
             })
         })
     },
-    deleteProject({commit}, params) {
+    deleteProject({ commit }, params) {
         return new Promise((resolve, reject) => {
             deleteProject(params).then(res => {
                 resolve()
@@ -93,7 +95,7 @@ const actions = {
             })
         })
     },
-    getProject({commit}, params) {
+    getProject({ commit }, params) {
         return new Promise((resolve, reject) => {
             getProject(params).then(res => {
                 resolve(res.model)
@@ -102,6 +104,25 @@ const actions = {
             })
         })
     },
+    getProviceList({ commit }, params) {
+        return new Promise((resolve, reject) => {
+            getProviceList(params).then(res => {
+                resolve(res.model)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+    getChildAreaByAreaId({ commit }, params) {
+        return new Promise((resolve, reject) => {
+            getChildAreaByAreaId(params).then(res => {
+                resolve(res.model)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+
 }
 
 export default {

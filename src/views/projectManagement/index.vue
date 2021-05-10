@@ -37,7 +37,7 @@
     >
       <el-table-column align="center" label="序号" width="95">
         <template slot-scope="scope">
-          {{ scope.$index }}
+          {{ scope.$index + 1 }}
         </template>
       </el-table-column>
       <el-table-column label="项目名称">
@@ -67,7 +67,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <pagination :total="pagination.totleCount" :page="pagination.offset" :limit="pagination.max" @pagination="getTableList"/>
+    <pagination :total="pagination.totleCount" ::page="pagination.offset" :limit="pagination.max" @pagination="getTableList"/>
     <UnitModal :visible="visible" :type="modalType" :handleCancel="handleProjectCancel" :handleOk="handleProjectOk" :unitData="unitData"/>
     <UnitDelModal :visible="delVisible" :handleCancel="handleDelCancel" :handleOk="handleDelOk" />
   </div>
@@ -165,7 +165,7 @@ export default {
       this.unitId = '';
       this.unitData = {};
     },
-    handleProjectOk(data) {
+    handleProjectOk(data, callback) {
       console.log(data, 'iissss')
       if(data.modalType === 1) {
         this.$store.dispatch('userInformation/addProject', data).then(res => {
@@ -173,7 +173,8 @@ export default {
             message: '新增项目成功！',
             type: 'success',
           });
-          // this.fetchData({offset: 1, max: 10})
+          this.fetchData({offset: 1, max: 10})
+          callback();
           this.handleProjectCancel();
         })
       }else if(data.modalType === 2) {
@@ -182,8 +183,9 @@ export default {
             message: '项目修改成功！',
             type: 'success',
           });
+          callback();
           this.fetchData({offset: this.pagination.offset, max: this.pagination.max})
-          // this.handleUnitCancel();
+          this.handleProjectCancel();
         })
       }
     },

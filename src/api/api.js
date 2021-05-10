@@ -1,6 +1,6 @@
 /*
  * @Descripttion: 接口api
- * @version: 
+ * @version:
  * @Author: shang xia
  * @Date: 2021-04-01 10:44:14
  * @LastEditors: shang xia
@@ -90,7 +90,6 @@ export function getPersonalList(params) {
     })
 }
 
-
 // 更新人员信息
 export function updatePersonal(params) {
     return request({
@@ -131,6 +130,24 @@ export function updateProject(params) {
 export function getProject(params) {
     return request({
         url: '/iot/mobile/project/findPageWith',
+        method: 'get',
+        params
+    })
+}
+
+// 获取省级
+export function getProviceList(params) {
+    return request({
+        url: '/iot/mobile/project/findProviceList',
+        method: 'get',
+        params
+    })
+}
+
+// 获取市级
+export function getChildAreaByAreaId(params) {
+    return request({
+        url: '/iot/mobile/project/findChildAreaByAreaId',
         method: 'get',
         params
     })
